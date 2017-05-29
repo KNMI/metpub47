@@ -1,0 +1,122 @@
+program_mode = UTILITY  of STAND_ALONE
+station_type_turbowin = ship of fixed
+
+
+
+
+========================================================================================================================
+veranderingen versie 1.0 
+========================================================================================================================
+
+26-10-2006 - fixed sea stations kunnen inlezen en exporteren van meta data zonder imo nummer in turbowin
+             te hebben ingevuld (ships kunnen dat niet)
+20-12-2006 - Routes volgens description areas (A11, A12 etc.)
+
+
+========================================================================================================================
+veranderingen versie 1.1 t.o.v. versie 1.0
+========================================================================================================================
+07-02-2007 - help files volgens compiled HTML dit voor Windows Vista
+             dus Windows 95 (en 98?) kunnen niet meer help file systeem openen
+07-02-2007 - extra ? voor "do you want to quit" (MB_ICONQUESTON wordt niet meer aanbevolen, in Vista RC 1 zelfs helemaal
+             afwezig, maar in definitieve Vista moet hij wel weer inzitten
+
+                1] #include "htmlhelp.h"
+
+                2] in constructor [main.cpp]
+                   /* laden HTMLHelp OCX voor HTML (chm) help */
+                   hHelpOCX = ::LoadLibrary("hhctrl.ocx");
+                   if (!hHelpOCX)
+                     ::MessageBox(0, "Cannot use the html help", "TurboWin Error", MB_OK | MB_ICONERROR);
+
+                3] in main.h (private section)
+                   // voor HTMLHelp (chm)
+                   typedef HWND WINAPI (*HtmlHelpFunc)( HWND hwndCaller, LPCSTR pszFile, UINT uCommand, DWORD dwData );
+                   HtmlHelpFunc HTMLHelp;
+                   HINSTANCE hHelpOCX;
+
+                4] voorbeeld chm help file aanroep
+                   void __fastcall TForm1::InfoDataSourcesClick(TObject *Sender)
+                   {
+                      AnsiString volledig_help_path = "";
+                      volledig_help_path = global_climate_atlas_root_path + help_sub_dir + "DATA.CHM";
+                      HTMLHelp = (HtmlHelpFunc)::GetProcAddress(hHelpOCX, ATOM_HTMLHELP_API_ANSI);
+                      HTMLHelp(0, volledig_help_path.c_str(), HH_DISPLAY_TOPIC, 0);
+                   }
+
+
+========================================================================================================================
+veranderingen versie 1.2 t.o.v. versie 1.1
+========================================================================================================================
+                5] // tegenhanger van punt 2) [voor de zekerheid als chm niet alleen vanuit mainform wordt opgeroepen]
+                   void __fastcall TForm1::FormDestroy(TObject *Sender)
+                   {
+                      // voor chm HTMLHelp
+                      ::FreeLibrary("hhctrl.ocx");
+                   }
+
+06-06-2006 - table 2201.txt (vessel-type) aangepast zadat hij nu precies in combobox past (sommige items waren nl. te lang)
+           - in functies: Set_XML_recruiting_Country(0 en Import_XML_Meta_Data() de aanroep naar inlezen_routes()
+             geschrapt (was al eerder niet meer nodig omdat routes niet meer afhankelijk zijn van recruiting country)
+           - nu password protected
+           - "unlink image" buttons toegevoegd
+           - check op grootte digital image file (want bij b.v. 10 MB file loopt het geheugen vol met honderden MB's)
+13-06-2007 - routes.chm aangpast voor R-routes (i.p.v. A-routes)
+           - table_1802.txt aangepast voor R-routes (i.p.v. A-routes)
+16-07-2008 - veld "last data change any metata data" op verzoek o.a. Sarh North i.v.m. verwarring over dit item  disabled
+
+
+
+========================================================================================================================
+veranderingen versie 1.3 t.o.v. versie 1.2
+========================================================================================================================
+02-09-2009 - Bij ingelezen turbowin versie naam + nummer de V er uitgehaald, Function: Get_TurboWin_Version_Number()
+             [turbowin_data.cpp] verzoek Sarah/Pierre.
+             Dus nu bv: TurboWin 4.5 professional i.p.v. TurboWin V4.5 professional
+           - IMAGES.CHM update
+           - DRAWINGS.CHM nieuwe help file toegevoegd
+           - table_1801.txt update
+           - Bij password scherm: nu na invullen password kan je verder gaan door Enter te geven (vroeger alleen met
+             muisklik op OK button) Verwezenlijkt door bij OK button bij Properties default = true te zetten
+05-09-2009 - report date nu disabled met toevoeging "for National Met Service use" (meta element 3)
+             als gevolg, dit niet meer een veplicht element. Function: Check_Uitgelezen_Data() [file checks.cpp]
+           - last change date enabled (meta element 100)
+           - toegevoegd "e.g. hPa" (meta element 46 en 52)
+           - digital images buttons niet meer in tab reeks meegenomen
+09-09-2009 - static text: "for all elements: put the mouse pointer on the input field etc." toegevoegd
+14-10-2009 - check op aantal regels voor dat xml file inglezen wordt
+22-11-2009 - check op "last date change any metadata" (moet verplicht ingevuld zijn)
+
+
+    
+========================================================================================================================
+veranderingen versie 1.4 t.o.v. versie 1.3
+========================================================================================================================
+18-05-2010 - bij rode laptop (resolutie 1920 x 1080) wordt password scherm maar gedeeltelijk weergegeven
+             password form: borderstyle -> "dialog" gemaakt
+             Verder op password input form een quit button er bij gezet (en aanduiding Cancel is nu read-only)
+           - nieuwe help file: type.chm
+           - update help file: drawings.chm
+           - update help file: images.chm
+           - table file 0801 update [folder codetables]
+           - table file 2202 update [folder codetables]
+           - update i.v.m. table 0801 (SL -> W): Function Set_XML_Thermometer_1_Exposure() [xml_inlezen.cpp]
+           - update i.v.m. table 0801 (SL -> W): Function Set_XML_Thermometer_2_Exposure() [xml_inlezen.cpp]
+           - update i.v.m. table 0801 (SL -> W): Function Set_Thermometer_1_Exposure_pub47_119() [delimited_119_inlezen.cpp]
+           - update i.v.m. table 0801 (SL -> W): Function Set_Thermometer_2_Exposure_pub47_119() [delimited_119_inlezen.cpp]
+           - update i.v.m. table 0801 (SL -> W): Function Set_Thermometer_1_Exposure() [delimited_109_inlezen.cpp]
+           - update i.v.m. table 0801 (SL -> W): Function Set_Thermometer_2_Exposure() [delimited_109_inlezen.cpp]
+28-07-2010 - function: Set_XML_Logbook_Name_Version() [xml_inlezen.cpp] zo aangepast dat ondanks dat eventueel
+             bij een geinporteerde metadata file de TurboWin version oud is, dat dan in het scherm weer de laatste TurboWin
+             version staat (en indien nu weer gesaved dan worden zowel de xml als de delimited metadata files nu met de laatste
+             TurboWin versie weggeschreven)
+
+
+========================================================================================================================
+veranderingen versie 1.5 t.o.v. versie 1.4
+========================================================================================================================
+18-07-2011 - invul voor prST (satellite transmission system) veranderd van edit field naar listbox (table 1601) [regel 34 in hoofdinvoer scherm]
+             ook naam geving van dit veld veranderd naar "Transmission system..." i.p.v. "Satellite system...."
+           - vssIM (table 2202) uitgebreid met "90 Patforms and Rigs" en "95 Platforms and Rigs" (AWS) [regel 31 van hoofdinvoerscherm]
+           - typefout: regel 30 hoofdinvulveld: "VOSCLIM" i.p.v. "VOSVLIM"
+           - typrfout: "and/or" i.p.v. "end/or" bij export message
