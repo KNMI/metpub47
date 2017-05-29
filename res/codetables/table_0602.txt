@@ -1,0 +1,6 @@
+OPD One observation per day (24 hour intervals). 
+TPD Two observations per day (12 hour intervals). 
+FPD Four observations per day (6 hour intervals). 
+EPD Eight observations per day (3 hour intervals). 
+HLY Hourly observations. 
+IRR Irregular observations. 
